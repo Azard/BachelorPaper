@@ -9,6 +9,7 @@
 根据Google公司的统计，截止2015年9月30日，在全球范围内已激活的Android设备已经达到14亿台[2]，超过微软公司的Windows，苹果公司的Mac OS和iOS，是全球运行设备数量最多的商用操作系统。
 
 \section{Android生态系统}
+\label{sec:android_ecosystem}
 
 通常每台智能手机运行着数十至上百个应用程序，简称App。
 其中一部分是制造设备的厂商或定制Android操作系统厂商的App，但用户每天接触时间最长的是第三方的应用厂商或者独立开发者开发的，并且需要连接互联网的App。
@@ -61,8 +62,9 @@ Google公司的Nexus系列设备，运行的是Google公司融合了AOSP和不�
 如果能够将这款设备的App崩溃信息发送给开发者，开发者就能够定位并解决问题，通过更新App提高兼容性和稳定性。
 
 \section{项目解决的问题}
+\label{sec:solve_problem}
 
-本文介绍的工具代号“Appetizer”，解决的是\ref{subsec:exist_problem}中描述的问题。“Appetizer”包括一个能够集成在Android应用中的轻量级软件开发工具包，简称为客户端SDK，和具有良好可扩展性的用于接收并处理数据的服务端程序。
+本文介绍的工具代号“Appetizer”，解决的是\ref{subsec:exist_problem}小节中描述的问题。“Appetizer”包括一个能够集成在Android应用中的轻量级软件开发工具包，简称为客户端SDK，和具有良好可扩展性的用于接收并处理数据的服务端程序。
 
 Appetizer客户端SDK能够收集用户使用App的操作路径和时间，在App崩溃时收集程序调用栈和设备相关状态信息，侦测Android应用程序未响应事件，记录App每次启动时的黑白屏时间，存储这些使用信息，并在网络条件允许的情况下将收集到的信息发送到服务端。
 
@@ -71,10 +73,18 @@ Appetizer服务端能够持久化存储客户端SDK发送的消息，对App使�
 Appetizer客户端SDK的特点是轻量和稳定。不使用任何第三方库，尽可能减小SDK的空间占用，减少使用该SDK的App的空间占用增加。同时保证稳定性，不会因为SDK本身的问题造成App崩溃。Appetizer服务端在架构上保证了良好的可扩展性，可以通过简单的增加服务器数量承受更大的流量压力。
 
 \section{相关工具产品}
+\label{sec:related_work}
 
-中国市场上提供用户行为分析统计的商业产品主要有友盟[4]和TalkingData[5]，他们的产品对于Android App用户行为分析方面的功能包括用户活跃度、用户构成、渠道分析、页面访问路径统计、事件转化率等，主要是对session统计得到的数据进行处理的结果，除此之外还有较为简单的崩溃信息收集功能，实现效果各异。
+中国市场上，提供用户行为分析统计和崩溃信息收集的商业产品主要有腾讯Bugly，友盟[4]和TalkingData[5]。他们的产品对于Android App用户行为分析方面的功能包括用户活跃度、用户构成、渠道分析、页面访问路径统计、事件转化率等，主要是对session统计得到的数据进行处理的结果，其中腾讯Bugly对应用崩溃信息分析处理功能较强。
 
-国际市场上做用户行为分析统计的产品主要有Google公司的FireBase和Yahoo公司的Flurry Analytics[6]。Flurry Analytics的功能丰富，可以对用户行为统计数据进行较为复杂的分析和报表输出。国内外的学术界也有对Android应用的用户使用行为进行分析的研究[7][8]。
+国际市场上，提供相关功能的商业产品主要有Google FireBase，Yahoo Flurry Analytics[6]和Twitter Fabric。其中Google FireBase同时包括用户行为统计和崩溃信息收集，其他功能也较为丰富，是Google公司主推的Android开发者服务工具。Flurry Analytics可以对用户行为统计数据进行较为复杂的分析和报表输出。Fabric可以将所有用户的App崩溃信息反馈给开发团队，并且还有一整套团队测试工具进行辅助。
 
-做App崩溃信息统计分析的商业产品同样有Google公司的FireBase以及Twitter公司的Fabric，Fabric可以将所有用户的App崩溃信息反馈给开发团队，并且还有一整套团队测试工具进行辅助。开源软件ACRA[9]也是做Android App崩溃信息统计的工具，因为是开源软件需要使用者自己搭建服务端，主要功能完善并且发送信息有很强的自定义性。
+开源软件ACRA[9]是做Android App崩溃信息统计的工具，因为是开源软件需要使用者自己搭建服务端，崩溃信息收集功能完善并且发送的信息有很好的可定制性。
 
+国内外的学术界也有对Android应用的用户使用行为进行分析的研究[7][8]。
+
+\section{本章小结}
+
+本章是整篇文章的绪论，描述了整篇文章研究的主要问题。
+
+\ref{sec:android_ecosystem}节介绍了Android生态系统的大致流程、碎片化的问题和整个生态系统面临的问题，\ref{sec:solve_problem}节介绍了“Appetizer”的主要功能、特点和能够解决的问题，\ref{sec:related_work}节列出了国内外解决Android生态问题的相关商业产品和开源产品以及它们的特点。
