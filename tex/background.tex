@@ -20,6 +20,8 @@ Android系统底层基于Linux内核，使用Linux内核文件形式的硬件驱
 
 Android应用建立在Android系统三层架构之上，开发者通过调用Android系统提供的接口实现各种Android应用程序。图\ref{fig:androidSystemArchitecture}展现了整个Android系统的架构。
 
+Android系统提供了名为SharedPreferences的轻量级事务性key-value存储系统，每个Android应用程序有独立的存储空间，Appetizer基于该轻量级key-value存储系统和文件系统，实现了满足原子性的轻量级二进制数据持久化消息队列。
+
 \subsection{Android应用模型}
 
 一台Andorid设备里的每个Android应用拥有独立的UID(User Identifier)，每个App都相当于Linux中独立用户，通过复用Linux的用户级隔离机制来实现Android应用的权限控制和数据隔离。
@@ -63,6 +65,7 @@ Android应用崩溃会影响用户的正常使用，崩溃的原因可能是程�
 Andorid应用崩溃信息收集功能可以及时把用户使用产生的崩溃问题告知开发团队，开发团队根据函数调用栈、设备型号、系统状态等信息对崩溃原因进行分析，及时解决问题，减少程序崩溃带来的负面影响。
 
 \subsection{ANR}
+\label{subsec:background_ANR}
 
 Android ANR全称Application not responding，是指App运行某一段代码逻辑的时间过长，而无法响应用户的操作，通俗的说法就是程序卡死。
 
