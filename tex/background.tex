@@ -64,13 +64,13 @@ Android应用崩溃会影响用户的正常使用，崩溃的原因可能是程�
 
 Andorid应用崩溃信息收集功能可以及时把用户使用产生的崩溃问题告知开发团队，开发团队根据函数调用栈、设备型号、系统状态等信息对崩溃原因进行分析，及时解决问题，减少程序崩溃带来的负面影响。
 
-\subsection{ANR}
+\subsection{应用程序未响应}
 \label{subsec:background_ANR}
 
-Android ANR全称Application not responding，是指App运行某一段代码逻辑的时间过长，而无法响应用户的操作，通俗的说法就是程序卡死。
+Android ANR全称Application not responding（应用程序未响应），是指App运行某一段代码逻辑的时间过长，而无法响应用户的操作，通俗的说法就是程序卡死。
 
- 在Android里，应用程序的响应性是由Activity Manager和WindowManager系统服务监视的，当它监测到以下情况中的一个时，系统就会针对特定的应用程序显示ANR：
- 
+在Android里，应用程序的响应性是由Activity Manager和WindowManager系统服务监视的，当它监测到以下情况中的一个时，系统就会针对特定的应用程序显示ANR：
+
  \begin{itemize}
  	\item 在5秒内没有响应用户的输入事件
  	\item BroadcastReceiver在10秒内没有执行完毕
@@ -78,9 +78,13 @@ Android ANR全称Application not responding，是指App运行某一段代码逻�
 
 Android App和用户交互的界面由主线程更新，因此主线程又称为UI线程。应用程序长时间不响应用户输入的原因，可能是UI线程在长时间执行其他任务，例如数据库操作、网络操作、复杂的计算操作，也可能是UI线程死循环或者死锁。
 
-间歇性发生ANR会让用户感觉应用卡顿，使用体验下降，长时间发生ANR会导致用户无法与应用交互，也就无法使用App，只能让系统强制关闭该应用。收集ANR发生时的函数调用栈信息和设备实时状态，发送给开发团队，有利于开发团队解决ANR问题，提升App的用户体验。
+间歇性发生ANR会让用户感觉应用卡顿，使用体验下降，长时间发生ANR会导致用户无法与应用交互，也就无法使用App，只能让系统强制关闭该应用。收集ANR发生时的函数调用栈信息和设备实时状态，发送给开发团队，有利于开发团队解决ANR问题，提升App的用户体验。如图\ref{fig:ANRDemo}是Android应用程序发生ANR时系统的弹窗提示。
 
-% TODO ANR截图
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.3\textwidth]{ANRDemo.png}
+	\bicaption[fig:ANRDemo]{这里将出现在插图索引中}{Android ANR事件}{Fig}{Android ANR event}
+\end{figure}
 
 \subsection{启动黑白屏}
 

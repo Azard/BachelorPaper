@@ -51,20 +51,18 @@ Appetizer客户端SDK最低支持Android API 9，即Android 2.3 Gingerbread。�
 
 在Android 6.0及以上的系统中，Apache HTTP Client已被弃用，采用Ok HTTP作为默认的HTTP客户端。但是由于Android 6.0及以上的系统使用ART RunTime取代Dalvik虚拟机，ART RunTime不支持在Android应用程序崩溃后创建新线程，Ok HTTP Client发送Http请求后为了不阻塞原线程继续运行，采用创建新线程的方式异步接受服务端的返回值，导致的问题是在ART RunTime下Andorid应用崩溃后无法使用Ok HTTP Client发送HTTP请求。因此Appetizer客户端SDK的网络模块，基于老版本Android系统默认的Apache HTTP Client进行封装实现。
 
-\subsection{持久化消息队列}
+\subsection{持久化队列}
 \label{subsec:persistentQueue}
 
-Appetizer客户端SDK的持久化消息队列PersistentQueue，能够存储任何二进制数据，实现了Java Queue的全部接口，任何Java使用抽象类Queue申明的对象都可以被赋值为PersistentQueue，而且对象的操作方法保持不变。
+Appetizer客户端SDK的持久化队列PersistentQueue，能够存储任何二进制数据，实现了Java Queue的全部接口，任何Java使用抽象类Queue申明的对象都可以被赋值为PersistentQueue，而且对象的操作方法保持不变。
 
-每次程序对PersistentQueue对象的入队或者出队操作成功后，队列的持久化存储数据都会发生变化。Android应用程序关闭、设备重启或者内存断电后，当Android应用程序重启启动时，Appetizer初始化时能够恢复持久化消息队列到上一次操作成功后的状态。Appetizer客户端SDK实现的持久化消息队列PersistentQueue基于Android的轻量级key-value存储系统SharedPreferences和Android的文件系统进行实现，并且保证了操作的原子性，在PersistentQueue方法执行的过程中发生了断电、存储硬件被取出等会导致方法无法正常执行或中断的情况时，Appetizer重新初始化后PersistentQueue能够还原到该操作没有进行的状态。
+每次程序对PersistentQueue对象的入队或者出队操作成功后，队列的持久化存储数据都会发生变化。Android应用程序关闭、设备重启或者内存断电后，当Android应用程序重启启动时，Appetizer初始化时能够恢复持久化消息队列到上一次操作成功后的状态。Appetizer客户端SDK实现的持久化队列PersistentQueue基于Android的轻量级key-value存储系统SharedPreferences和Android的文件系统进行实现，并且保证了操作的原子性，在PersistentQueue方法执行的过程中发生了断电、存储硬件被取出等会导致方法无法正常执行或中断的情况时，Appetizer重新初始化后PersistentQueue能够还原到该操作没有进行的状态。
 
-Android的key-value存储系统SharedPreferences底层是基于文件系统和XML格式实现的，并且保证了原子性和一致性。在Appetizer客户端SDK的功能需求上，需要持久化消息队列保存Java对象序列化后的二进制数据，SharedPreferences通常用于实现配置文件存储，简单的用户信息存储等。但是由于SharedPreferences存储实现的编码问题，不同的编码对于文本换行符的定义不一致，单个字节0x0A通过SharedPreferences写入后再读出会变成字节0x0D，因此无法使用SharedPreferences保存Java序列化对象。一种解决办法是存储Base64编码的对象序列化数据，但是比较复杂的对象序列化数据很大，每次操作进行Base64编码的计算开销过大不能接受。
+Android的key-value存储系统SharedPreferences底层是基于文件系统和XML格式实现的，并且保证了原子性和一致性。在Appetizer客户端SDK的功能需求上，需要持久化队列保存Java对象序列化后的二进制数据，SharedPreferences通常用于实现配置文件存储，简单的用户信息存储等。但是由于SharedPreferences存储实现的编码问题，不同的编码对于文本换行符的定义不一致，单个字节0x0A通过SharedPreferences写入后再读出会变成字节0x0D，因此无法使用SharedPreferences保存Java序列化对象。一种解决办法是存储Base64编码的对象序列化数据，但是比较复杂的对象序列化数据很大，每次操作进行Base64编码的计算开销过大不能接受。
 
 Android的文件系统可以写入和读取二进制数据，并且数据不会发生变化，但是Android系统提供的文件操作无法保证操作的原子性，如果在文件写入操作执行过程中发生了程序崩溃、设备断电或者存储硬件被取出等问题，会导致只有部分数据成功写入，而且程序无法判断写入操作是否成功执行，因此再进行读取操作时会发生问题。
 
 Appetizer客户端SDK实现的原则是不使用第三方库，对文件系统的操作进行封装，同时支持原子性和Java对象序列化持久存储，比较复杂而且难以保证实现的正确性。结合支持原子性操作的SharedPreferences和支持Java对象序列化持久存储的文件系统操作API，可以通过简单的方式实现日志式解决方案的支持原子性的持久化消息队列。
-
-% TODO 图示
 
 每个PersistentQueue对象中包括四个成员对象，SharedPreferences句柄、两个文件句柄和存储在内存的LinkedList对象。
 
@@ -79,13 +77,19 @@ PersistentQueue的关键技术是原子性文件写入操作，步骤如下：
 	\item SharedPreferences的状态改变为“文件写入操作完成”。
 \end{enumerate} 
 
-如果操作在第1步崩溃，因为没有开始写入操作，重新载入不会出现问题。操作第2、4步由SharedPreferences保证原子性。如果在操作第3步崩溃，重新载入恢复的时候根据SharedPreferences的状态信息判断在文件写入时崩溃，读取另一个文件反序列化恢复LinkedList对象数据。
+如果操作在第1步崩溃，因为没有开始写入操作，重新载入不会出现问题。操作第2、4步由SharedPreferences保证原子性。如果在操作第3步崩溃，重新载入恢复的时候根据SharedPreferences的状态信息判断在文件写入时崩溃，读取另一个文件反序列化恢复LinkedList对象数据。图\ref{fig:persistentQueue}展现了Appetizer操作持久化队列的程序执行流程，其中File A和File B互为备份，交替写入，状态都保存在SharedPreferences中。
+
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=1.0\textwidth]{persistentQueue.pdf}
+	\bicaption[fig:persistentQueue]{这里将出现在插图索引中}{持久化队列}{Fig}{Persistent Queue}
+\end{figure}
 
 PersistentQueue的单个元素修改、增加、删除操作，首先操作LinkedList的元素，然后调用原子性文件写入操作保证数据持久化存储，最后函数执行完成，返回函数返回值。PersistentQueue的多个元素操作为了提高性能避免多次原子性文件写入操作，在对内存中的LinkedList对象修改全部执行完毕后调用一次原子性文件写入操作，而不是简单的复用单个元素的修改进行实现。
 
 PersistentQueue的元素读取操作直接读取内存中的LinkedList对象，不需要其他的修改。
 
-在Appetizer客户端SDK的实现中，存在三个PersistentQueue对象，分别是用户会话信息的持久化消息队列、崩溃信息和ANR信息的持久化消息队列、黑白屏时长信息的持久化消息对了，其中ANR信息和崩溃信息需要收集的数据类似，合并成一个数据类。
+在Appetizer客户端SDK的实现中，存在三个PersistentQueue对象，分别是用户会话信息的持久化队列、崩溃信息和ANR信息的持久化队列、黑白屏时长信息的持久化队列，其中ANR信息和崩溃信息收集的数据类似，因此合并成一个数据类，共用同一个持久化队列。
 
 \subsection{用户会话收集}
 \label{subsec:sessionCollector}
@@ -112,8 +116,6 @@ Android应用程序正常使用并正常退出的情况下，用户会话信息�
 \label{subsec:crashCollector}
 
 崩溃信息收集是Appetizer客户端SDK的重要功能，开发者只需要在应用程序的Application调用Appetizer的初始化方法，就自动集成好了崩溃信息收集功能。
-
-% TODO 图
 
 崩溃信息收集功能的核心部分是单例类CrashReporter，在Appetizer初始化的时候创建。CrashReporter继承了接口Thread.UncaughtExceptionHandler，实现了uncaughtException方法，并调用Android SDK方法Thread.setDefaultUncaughtExceptionHandler传入自身作为参数，把CrashReporter设置为默认的异常处理类，可以捕获全局异常。
 所有未被捕获的异常都会导致Android应用崩溃，如果设置了全局异常捕获，在应用发生崩溃前异常会被CrashReport的uncaughtException方法捕获，可以在该方法内实现崩溃信息和设备实时状态信息的收集。
@@ -160,13 +162,15 @@ Android应用程序正常使用并正常退出的情况下，用户会话信息�
 
 % TODO WatchDog ref
 
-% TODO 流程图
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=1.0\textwidth]{ANR.pdf}
+	\bicaption[fig:ANR]{这里将出现在插图索引中}{ANR侦测流程}{Fig}{ANR detector workflow}
+\end{figure}
 
 \ref{subsec:background_ANR}小节介绍了Android应用程序未响应（ANR）的相关背景知识，Appetizer客户端SDK的ANR侦测参考了WatchDog并复用崩溃信息收集功能，在实现上进行了一定程度的简化。
 
-集成了ANR侦测功能的Android应用程序在前台运行时，ANR侦测功能开启。ANR侦测模块会创建volatile整形数值变量tick，并在Android应用程序主进程中创建一个新的线程，如
-% TODO 图
-所示，该线程会保存当前tick的数值到lastTick变量，再发送一个会对tick进行加一操作的Runnable给主线程（UI线程）执行，然后睡眠5秒检查tick和lastTick变量是否相同。
+集成了ANR侦测功能的Android应用程序在前台运行时，ANR侦测功能开启。ANR侦测模块会创建volatile整形数值变量tick，并在Android应用程序主进程中创建一个新的线程，如图\ref{fig:ANR}所示，该线程会保存当前tick的数值到lastTick变量，再发送一个会对tick进行加一操作的Runnable给主线程（UI线程）执行，然后睡眠5秒检查tick和lastTick变量是否相同。
 如果数值相同，则说明主线程在5秒内没有空余时间执行发送过去的Runnable，认为此时主线程发生应用程序未响应，ANR侦测程序会创建ANRError对象，ANRError继承Java Error类并且能够收集所有线程的函数调用栈，ANR侦测程序再抛出ANRError对象，\ref{subsec:crashCollector}小节描述的应用崩溃信息收集模块会捕获该错误，并按照发生崩溃的流程收集此时的设备状态信息，ANRError错误中包含了此时所有线程函数调用栈信息，方便开发者进行应用程序未响应错误原因的定位。通过抛出ANRError的操作复用了应用程序崩溃信息收集模块，避免单独开发，减少Appetizer客户端SDK的占用空间，并且可以和一般的应用程序崩溃信息共用一个持久化消息队列。
 如果数值不同，则说明主线程在5秒内执行了发送过去的Runnable，可以认为过去的5秒主线程没有发生应用程序未响应的问题，该ANR侦测线程继续保存tick到lastTick，发送Runnable并睡眠5秒，如此循环。
 
@@ -179,7 +183,7 @@ Android应用程序正常使用并正常退出的情况下，用户会话信息�
 
 \section{本章小结}
 
-本章内容较多，介绍了真个Appetizer客户端SDK，是整个项目技术实现的核心部分。
+本章内容篇幅较大，介绍了Appetizer客户端SDK的方方面面，是整个项目技术实现的核心部分。
 
 \ref{sec:clientSDKOverview}节介绍了Appetizer客户端SDK的主要功能、轻量级的特点、多个应用数据隔离和对不可信的本地时间校准的方法。
 
