@@ -8,8 +8,24 @@
 
 \section{功能对比}
 
-功能列表
+Appetizer在国内外的同类产品不少，这些产品在功能上互相借鉴又各有千秋。表\ref{tab:SDK_function}罗列了Appetizer和几个同类产品的客户端SDK功能，各SDK的具体版本为Umeng v6.0.1，TalkingData v2.2.25，Flurry Analytics v6.3.1，Bugly v2.1.5。从对比中可以看出在客户端SDK功能上，Appetizer收集的信息较为全面。
 
+除了表中罗列的功能以外，其他产品还有各自的特色功能，例如TalkingData支持开发者在控制台上动态添加用户自定义事件，该功能不需要改变程序代码重新打包Android apk文件，即可让每台连接互联网的Android设备自动更新收集的信息。
+Flurry Analytics在服务端上的功能非常出众，对展现给开发者和运营团队的报表有很好的数据处理和可自定义性。Bugly收集了一些人工解决常见崩溃原因的方案库，在展现崩溃信息给开发者的同时还会提供相应的崩溃解决方案供开发者参考。
+
+\begin{table}[!hpb]
+	\centering
+	\bicaption[tab:SDK_function]{指向一个表格的表目录索引}{产品SDK功能列表}{Table}{Product SDK function list}
+	\begin{tabular}{c c c c c c} \toprule
+		 & Appetizer & Umeng & TalkingData & Flurry Analytics & Bugly\\ \midrule
+		Activity session & √ & √ & √ & √ & √ \\
+		Fragment session & √ & x & x & √ & √ \\
+		User defined event & √ & √ & √ & √ & √ \\
+		Crash report & √ & √ & √ & √ & √ \\
+		ANR & √ & x & x & x & √ \\
+		Launch time & √ & x & x & x & x \\ \bottomrule
+	\end{tabular}
+\end{table}
 
 \section{SDK空间占用对比}
 
@@ -38,7 +54,7 @@
 	\bicaption[fig:SDK_size]{这里将出现在插图索引中}{产品SDK占用空间}{Fig}{Product SDK size}
 \end{figure}
 
-\section{性能对比}
+\section{性能测试}
 
 
 
