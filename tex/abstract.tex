@@ -11,10 +11,9 @@
 
 由于Android系统的开放式策略，Android平台的碎片化问题非常严重，包括系统版本碎片化和设备硬件型号碎片化，因此要开发出兼容多个系统版本和海量不同型号设备的App是一件具有挑战性的事情。获取App在不同设备、不同环境下的运行状况，是否崩溃，对提高用户体验也非常重要。
 
-本篇论文介绍了Appetizer，是一套收集Android平台用户使用App行为以及App卡顿、崩溃信息的系统，包括一个能够集成在Android应用中的轻量级软件开发工具包，和具有良好可扩展性的用于接收并处理数据的服务端程序。
+本篇论文介绍了Appetizer，是一套收集Android平台用户使用App行为以及App卡顿、崩溃信息的系统，包括一个能够集成在Android应用中的轻量级软件开发工具包，和具有良好可扩展性的用于接收并处理数据展现给开发者的服务端程序。
 
-本文描述了Appetizer的功能和设计，并与市面上现有的类似产品进行比较。
-% TODO 开销总结
+本文描述了Appetizer的功能和设计，并与市面上现有的类似产品进行比较，结果显示Appetizer在Android设备信息收集的覆盖面较广，开发工具包占用空间明显小于同类产品，造成的性能开销不会影响用户体验。
 
 \keywords{\large Android \quad 碎片化 \quad 移动设备 \quad 信息收集 \quad 用户行为}
 \end{abstract}
@@ -27,7 +26,9 @@ It is quite common that app developers wants to retrieve feedbacks about their a
 
 Due to the openness nature of the Android ecosystem, there exist a large number of different Android devices with slight difference from the official distribution, also termed as the "Android fragmentation problem". App developers face the challenges to develop an app that can adjust to hundreds of different device models. Whether the app would crash on certain device at certain environment is an vital information for the developers to improve app quality.
 
-This thesis introduces Appetizer, a system that collects app runtime behavior, crash and lag information. Appetizer serves as a lightweight development kit, being integrated into developers' apps. It also has a server side units that process incoming data and render statistics for developers. The design features, implementation and comparison with various off-the-shelf commercial solutions are presented in this thesis.
+This thesis introduces Appetizer, a system that collects app runtime behavior, crash and lag information. Appetizer serves as a lightweight development kit, being integrated into developers' apps. It also has a server side units that process incoming data and render statistics for developers. 
 
-\keywords{\large Android \quad Fragmentation \quad Mobile device \quad Information collect \quad User beavior}
+The design features, implementation and comparison with various off-the-shelf commercial solutions are presented in this thesis. The result showed that Appetizer cover wide functions in Android device information collecting, Appetizer SDK size is significantly smaller than commercial solutions, overhead won't decrease the user experience.
+
+\keywords{\large Android \quad Fragmentation \quad Mobile device \quad Information collection \quad User beavior}
 \end{englishabstract}

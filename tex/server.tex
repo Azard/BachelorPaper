@@ -46,7 +46,7 @@ Appetize服务端的前台（Frontend）部分使用Python 3.5开发，接收And
 
 后台的主要作用是持久化存储数据和完成计算密集型业务。后台接收前台做过简单处理的数据，持久化存储数据，对数据做增量型数据统计处理，定时做计算量较大的数据处理业务，处理后的数据定时发送给前台共查询API调用。
 
-Appetizer服务端的后台（Backend）部分使用Java 8开发，主要考虑到Java较好的计算性能以及强大的工具类库，依赖的第三方库包括ProtocolBuffer、MongoDB Driver和RabbitMQ Client。
+Appetizer服务端的后台（Backend）部分使用Java 8开发，主要考虑到Java较好的计算性能以及强大的工具类库，依赖的第三方库包括ProtocolBuffer\parencite{protobuf}、MongoDB Driver和RabbitMQ Client。
 后台框架将RabbitMQ通道传来的消息分配到不同的任务执行单元，框架自动将消息内的ProtocolBuffer数据根据描述文件转成MongoDB的BSON（二进制JSON）对象，然后进行增量处理或者定时的全量处理。
 
 定时任务的触发由另一块单独的Python程序完成，定时器同样通过RabbitMQ发送消息触发Appetizer服务端Java后台程序的定时任务，复用Java后台的消息分配机制，并且RabbitMQ生产者消费者模型有断电容错恢复机制，定时器复用消息模型增强了定时任务的稳定性。

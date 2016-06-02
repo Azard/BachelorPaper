@@ -49,7 +49,7 @@ Appetizer客户端SDK最低支持Android API 9，即Android 2.3 Gingerbread。�
 
 图\ref{fig:clientArchitecture}中的HttpSender模块，即客户端SDK的网络发送部分，该模块基于Apache HTTP Client封装实现，用于将Appetizer客户端SDK收集到的数据通过HTTP POST发送到服务端。
 
-在Android 6.0及以上的系统中，Apache HTTP Client已被弃用，采用Ok HTTP作为默认的HTTP客户端。但是由于Android 6.0及以上的系统使用ART RunTime取代Dalvik虚拟机，ART RunTime不支持在Android应用程序崩溃后创建新线程，Ok HTTP Client发送Http请求后为了不阻塞原线程继续运行，采用创建新线程的方式异步接受服务端的返回值，导致的问题是在ART RunTime下Andorid应用崩溃后无法使用Ok HTTP Client发送HTTP请求。因此Appetizer客户端SDK的网络模块，基于老版本Android系统默认的Apache HTTP Client进行封装实现。
+在Android 6.0及以上的系统中，Apache HTTP Client已被弃用，采用Ok HTTP作为默认的HTTP客户端。但是由于Android 6.0及以上的系统使用ART RunTime取代Dalvik虚拟机，ART RunTime不支持在Android应用程序崩溃后创建新线程，Ok HTTP Client发送Http请求后为了不阻塞原线程继续运行，采用创建新线程的方式异步接受服务端的返回值，导致的问题是在ART RunTime下Andorid应用崩溃后无法使用Ok HTTP\parencite{create_thread}。因此Appetizer客户端SDK的网络模块，基于老版本Android系统默认的Apache HTTP Client进行封装实现。
 
 \subsection{持久化队列}
 \label{subsec:persistentQueue}
@@ -160,15 +160,13 @@ Android应用程序正常使用并正常退出的情况下，用户会话信息�
 \subsection{ANR侦测}
 \label{subsec:ANRCollector}
 
-% TODO WatchDog ref
-
 \begin{figure}[!htp]
 	\centering
 	\includegraphics[width=1.0\textwidth]{ANR.pdf}
 	\bicaption[fig:ANR]{这里将出现在插图索引中}{ANR侦测流程}{Fig}{ANR detector workflow}
 \end{figure}
 
-\ref{subsec:background_ANR}小节介绍了Android应用程序未响应（ANR）的相关背景知识，Appetizer客户端SDK的ANR侦测参考了WatchDog并复用崩溃信息收集功能，在实现上进行了一定程度的简化。
+\ref{subsec:background_ANR}小节介绍了Android应用程序未响应（ANR）的相关背景知识，Appetizer客户端SDK的ANR侦测参考了ANR-WatchDog\parencite{watchdog}并复用崩溃信息收集功能，在实现上进行了一定程度的简化。
 
 集成了ANR侦测功能的Android应用程序在前台运行时，ANR侦测功能开启。ANR侦测模块会创建volatile整形数值变量tick，并在Android应用程序主进程中创建一个新的线程，volatile关键字会保证一个线程更新了某个对象后会立刻同步到其他线程，不会因为线程变量缓存的问题造成数据同步延迟问题，如图\ref{fig:ANR}所示，ANR侦测线程会保存当前tick的数值到lastTick变量，再发送一个会对tick进行加一操作的Runnable给主线程（UI线程）执行，volatile关键字的存在保证了主线程更新tick之后ANR侦测线程可以获取到最新的tick的值，然后睡眠5秒检查tick和lastTick变量是否相同。
 如果数值相同，则说明主线程在5秒内没有空余时间执行发送过去的Runnable，认为此时主线程发生应用程序未响应，ANR侦测程序会创建ANRError对象，ANRError继承Java Error类并且能够收集所有线程的函数调用栈，ANR侦测程序再抛出ANRError对象，\ref{subsec:crashCollector}小节描述的应用崩溃信息收集模块会捕获该错误，并按照发生崩溃的流程收集此时的设备状态信息，ANRError错误中包含了此时所有线程函数调用栈信息，方便开发者进行应用程序未响应错误原因的定位。通过抛出ANRError的操作复用了应用程序崩溃信息收集模块，避免单独开发，减少Appetizer客户端SDK的占用空间，并且可以和一般的应用程序崩溃信息共用一个持久化消息队列。
