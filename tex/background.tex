@@ -16,9 +16,9 @@
 	\bicaption[fig:androidSystemArchitecture]{这里将出现在插图索引中}{Android系统架构}{Fig}{Android system architecture}
 \end{figure}
 
-Android系统底层基于Linux内核，使用Linux内核文件形式的硬件驱动。Android系统中间层提供了常用的工具类库，包括轻量级数据库SQLite、浏览器引擎WebKit、图形程序接口OpenGL ES等，Android系统中间层还有Android Runtime，使用Dalvik虚拟机运行编译成字节码的程序。Android系统上层提供了窗口管理器、包管理器、资源管理器等能够让Android应用程序直接调用的工具和类库。
+图\ref{fig:androidSystemArchitecture}展现了整个Android系统的架构\footnote{\url{https://en.wikipedia.org/wiki/Android_(operating_system)}}。Android系统底层基于Linux内核，使用Linux内核文件形式的硬件驱动。Android系统中间层提供了常用的工具类库，包括轻量级数据库SQLite、浏览器引擎WebKit、图形程序接口OpenGL ES等，Android系统中间层还有Android Runtime，使用Dalvik虚拟机运行编译成字节码的程序。Android系统上层提供了窗口管理器、包管理器、资源管理器等能够让Android应用程序直接调用的工具和类库。
 
-Android应用建立在Android系统三层架构之上，开发者通过调用Android系统提供的接口实现各种Android应用程序。图\ref{fig:androidSystemArchitecture}展现了整个Android系统的架构。
+Android应用建立在Android系统三层架构之上，开发者通过调用Android系统提供的接口实现各种Android应用程序。
 
 Android系统提供了名为SharedPreferences的轻量级事务性key-value存储系统，每个Android应用程序有独立的存储空间，Appetizer基于该轻量级key-value存储系统和文件系统，实现了满足原子性的轻量级二进制数据持久化消息队列。
 
